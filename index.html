@@ -178,6 +178,130 @@
             cursor: not-allowed;
         }
 
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-category {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .modal-detail {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .modal-detail strong {
+            color: #333;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn-select {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+
+        .modal-btn-select:hover:not(:disabled) {
+            background: #5568d3;
+        }
+
+        .modal-btn-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-btn-close {
+            background: #f0f0f0;
+            color: #333;
+            flex: 1;
+        }
+
+        .modal-btn-close:hover {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 20px;
+                padding: 30px 20px;
+                max-height: 90vh;
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+            }
+        }
+
         .rank-badge {
             width: 36px;
             height: 36px;
@@ -362,6 +486,26 @@
             </div>
         </div>
 
+        <!-- MODAL: Détail Revendication -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="app.closeModal()">&times;</span>
+                <div class="modal-header">
+                    <div class="modal-category" id="modalCategory"></div>
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                </div>
+                <div class="modal-detail" id="modalDetail"></div>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-select" id="modalSelectBtn" onclick="app.modalSelectRevendication()">
+                        ✓ Sélectionner
+                    </button>
+                    <button class="modal-btn modal-btn-close" onclick="app.closeModal()">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- ÉCRAN 3: Succès -->
         <div id="successScreen" class="screen">
             <div class="success-screen">
@@ -393,17 +537,61 @@
                     description: 'Infirmiers-chefs et Commandants',
                     color: '#003D82',
                     revendications: [
-                        'Adéquation Grade / Emploi',
-                        'Missions transverses récompensées',
-                        'Tuilage lors des mobilités',
-                        'Création de postes d\'adjoints',
-                        'Protection du régime SHR',
-                        'Droit à la déconnexion',
-                        'Cohésion d\'équipe',
-                        'Simplification numérique',
-                        'Activité opérationnelle',
-                        'Règlement intérieur',
-                        'Mobilité / véhicules'
+                        {
+                            titre: 'Adéquation Grade / Emploi',
+                            categorie: 'Parcours professionnel, reconnaissance et valorisation',
+                            detail: '<strong>Adéquation Grade / Emploi</strong> : assurer une stricte concordance statutaire et temporelle entre le grade et l\'emploi occupé'
+                        },
+                        {
+                            titre: 'Missions transverses récompensées',
+                            categorie: 'Parcours professionnel, reconnaissance et valorisation',
+                            detail: '<strong>Missions transverses</strong> : récompenser (financièrement et par l\'avancement) les activités annexes exigeantes'
+                        },
+                        {
+                            titre: 'Tuilage lors des mobilités',
+                            categorie: 'Sécurisation des organisations et continuité de commandement',
+                            detail: '<strong>Tuilage lors des mobilités</strong> : instaurer des temps de transition pour qu\'aucun service ne manque d\'encadrement'
+                        },
+                        {
+                            titre: 'Création de postes d\'adjoints',
+                            categorie: 'Sécurisation des organisations et continuité de commandement',
+                            detail: '<strong>Création de postes d\'adjoints</strong> : officialiser ces postes pour limiter la pression et garantir une continuité de service'
+                        },
+                        {
+                            titre: 'Protection du régime SHR',
+                            categorie: 'Qualité de vie en service (QVS) et santé',
+                            detail: '<strong>Protection du régime SHR</strong> : créer des dispositifs de récupération clairs pour les cadres sollicités opérationnellement'
+                        },
+                        {
+                            titre: 'Droit à la déconnexion',
+                            categorie: 'Qualité de vie en service (QVS) et santé',
+                            detail: '<strong>Droit à la déconnexion</strong> : le rendre effectif pour préserver la santé mentale et l\'équilibre vie privée/professionnelle'
+                        },
+                        {
+                            titre: 'Cohésion d\'équipe',
+                            categorie: 'Qualité de vie en service (QVS) et santé',
+                            detail: '<strong>Cohésion d\'équipe</strong> : dédier des temps institutionnels pour renforcer la synergie'
+                        },
+                        {
+                            titre: 'Simplification numérique',
+                            categorie: 'Efficience et modernisation des outils de travail',
+                            detail: '<strong>Simplification numérique</strong> : déployer des outils ergonomiques et interopérables'
+                        },
+                        {
+                            titre: 'Activité opérationnelle',
+                            categorie: 'Faciliter le sens opérationnel de l\'engagement',
+                            detail: '<strong>Activité opérationnelle</strong> : intégrer le départ en intervention comme une véritable tâche'
+                        },
+                        {
+                            titre: 'Règlement intérieur',
+                            categorie: 'Consolidation des documents structurants',
+                            detail: '<strong>Règlement intérieur</strong> : Finaliser les annexes pour offrir une documentation réglementaire écrite'
+                        },
+                        {
+                            titre: 'Mobilité / véhicules',
+                            categorie: 'Consolidation des documents structurants',
+                            detail: '<strong>Mobilité</strong> : Réévaluer les besoins en déplacement et faciliter l\'usage de véhicules'
+                        }
                     ]
                 },
                 nono: {
@@ -411,18 +599,66 @@
                     description: 'Sapeurs-Pompiers SPP',
                     color: '#E31C23',
                     revendications: [
-                        'Effectifs adaptés',
-                        'Répartition des rôles',
-                        'Organisation du travail soutenable',
-                        'Reconnaissance de l\'investissement',
-                        'Évolutions de carrière fluides',
-                        'Sécurité opérationnelle',
-                        'Usure professionnelle',
-                        'Protection Sociale Complémentaire',
-                        'Catégorie super-active',
-                        'Revalorisation des carrières',
-                        'Cycles de travail',
-                        'Cancers professionnels reconnus'
+                        {
+                            titre: 'Effectifs adaptés au terrain',
+                            categorie: 'Opérationnel, effectifs et organisation',
+                            detail: '<strong>Effectifs adaptés au terrain</strong> : exiger des effectifs en parfaite adéquation avec la charge d\'intervention'
+                        },
+                        {
+                            titre: 'Répartition des rôles dans le secours',
+                            categorie: 'Opérationnel, effectifs et organisation',
+                            detail: '<strong>Répartition des rôles dans le secours</strong> : encadrer strictement les missions de Secours à Personne'
+                        },
+                        {
+                            titre: 'Organisation du travail soutenable',
+                            categorie: 'Opérationnel, effectifs et organisation',
+                            detail: '<strong>Organisation du travail soutenable</strong> : maintenir les gardes de 24h uniquement pour les agents qui en font le choix'
+                        },
+                        {
+                            titre: 'Reconnaissance de l\'investissement',
+                            categorie: 'Carrières, pouvoir d\'achat et reconnaissance',
+                            detail: '<strong>Reconnaissance de l\'investissement</strong> : valoriser la technicité, l\'expérience et le travail réel'
+                        },
+                        {
+                            titre: 'Évolutions de carrière justes et fluides',
+                            categorie: 'Carrières, pouvoir d\'achat et reconnaissance',
+                            detail: '<strong>Évolutions de carrière justes et fluides</strong> : garantir des perspectives cohérentes avec les responsabilités'
+                        },
+                        {
+                            titre: 'Sécurité opérationnelle',
+                            categorie: 'Santé, sécurité et protection',
+                            detail: '<strong>Sécurité opérationnelle</strong> : exiger des moyens et des procédures assurant une protection réelle face aux risques'
+                        },
+                        {
+                            titre: 'Usure professionnelle et fins de carrière',
+                            categorie: 'Santé, sécurité et protection',
+                            detail: '<strong>Usure professionnelle et fins de carrière</strong> : anticiper l\'usure du métier'
+                        },
+                        {
+                            titre: 'Protection Sociale Complémentaire (PSC)',
+                            categorie: 'Santé, sécurité et protection',
+                            detail: '<strong>Protection Sociale Complémentaire (PSC)</strong> : revendiquer des mesures fortes avec participation employeur supérieure au minimum légal'
+                        },
+                        {
+                            titre: 'Intégration en catégorie super-active',
+                            categorie: 'Carrières, pouvoir d\'achat et reconnaissance',
+                            detail: '<strong>Intégration en catégorie super-active</strong> : obtenir l\'intégration en catégorie « super-active »'
+                        },
+                        {
+                            titre: 'Revalorisation des carrières',
+                            categorie: 'Carrières, pouvoir d\'achat et reconnaissance',
+                            detail: '<strong>Revalorisation des carrières et rémunérations</strong> : augmenter les salaires pour rattraper l\'inflation'
+                        },
+                        {
+                            titre: 'Défendre les cycles de travail',
+                            categorie: 'Opérationnel, effectifs et organisation',
+                            detail: '<strong>Cycles de travail</strong> : défendre les cycles et le temps de travail adaptés'
+                        },
+                        {
+                            titre: 'Reconnaître les cancers professionnels',
+                            categorie: 'Santé, sécurité et protection',
+                            detail: '<strong>Cancers professionnels</strong> : faire reconnaître les cancers professionnels'
+                        }
                     ]
                 },
                 pats: {
@@ -430,18 +666,66 @@
                     description: 'Personnels Administratifs et Techniques',
                     color: '#009B9B',
                     revendications: [
-                        'Avancement à 100%',
-                        'Fin des quotas injustes',
-                        'Revalorisation RIFSEEP',
-                        'Mobilités transparentes',
-                        'PSC mutuelle/prévoyance',
-                        'Garanties maladie grave',
-                        'Sanctuarisation des acquis',
-                        'Télétravail 2j/semaine',
-                        'Management bienveillant',
-                        'Protection du régime SHR',
-                        'Accès professionnels santé',
-                        'Prévention TMS'
+                        {
+                            titre: 'Avancement à 100% et accès catégorie supérieure',
+                            categorie: 'Pouvoir d\'achat & Carrières',
+                            detail: '<strong>Avancement à 100 %</strong> avec possibilité d\'accès à la catégorie supérieure et fin des quotas injustes'
+                        },
+                        {
+                            titre: 'Revalorisation RIFSEEP',
+                            categorie: 'Pouvoir d\'achat & Carrières',
+                            detail: '<strong>Revalorisation du RIFSEEP</strong> face à l\'inflation avec refonte des critères d\'attribution'
+                        },
+                        {
+                            titre: 'Mobilités et nominations transparentes',
+                            categorie: 'Pouvoir d\'achat & Carrières',
+                            detail: '<strong>Garantir des mobilités et nominations transparentes</strong> par application stricte des Lignes Directrices de Gestion'
+                        },
+                        {
+                            titre: 'PSC mutuelle et prévoyance',
+                            categorie: 'Protection de l\'agent',
+                            detail: '<strong>PSC</strong> : mutuelle et prévoyance avec forte participation financière de l\'employeur avant son obligation en 2029'
+                        },
+                        {
+                            titre: 'Garanties maladie grave',
+                            categorie: 'Protection de l\'agent',
+                            detail: '<strong>Maintien des garanties plus favorables</strong> en cas de maladie grave ou longue'
+                        },
+                        {
+                            titre: 'Sanctuarisation des acquis sociaux',
+                            categorie: 'Protection de l\'agent',
+                            detail: '<strong>Sanctuarisation stricte des acquis sociaux</strong> face à toute tentative de régression'
+                        },
+                        {
+                            titre: 'Télétravail 2 jours/semaine',
+                            categorie: 'Qualité de vie au travail (QVT) et santé',
+                            detail: '<strong>Télétravail garanti</strong> avec 2 jours par semaine (postes éligibles élargis)'
+                        },
+                        {
+                            titre: 'Management bienveillant',
+                            categorie: 'Qualité de vie au travail (QVT) et santé',
+                            detail: '<strong>Management bienveillant</strong> avec répartition juste des missions et charge de travail'
+                        },
+                        {
+                            titre: 'Protection régime SHR',
+                            categorie: 'Qualité de vie au travail (QVT) et santé',
+                            detail: '<strong>Protection du régime SHR</strong> avec dispositifs de récupération clairs'
+                        },
+                        {
+                            titre: 'Accès aux professionnels de santé',
+                            categorie: 'Qualité de vie au travail (QVT) et santé',
+                            detail: '<strong>Accès aux professionnels de santé</strong> et créneaux de sport sur le temps de travail pour prévenir les TMS'
+                        },
+                        {
+                            titre: 'Prévention des TMS',
+                            categorie: 'Qualité de vie au travail (QVT) et santé',
+                            detail: '<strong>Prévention des Troubles Musculo-Squelettiques (TMS)</strong> avec aménagements ergonomiques'
+                        },
+                        {
+                            titre: 'Accès professionnels et sport',
+                            categorie: 'Qualité de vie au travail (QVT) et santé',
+                            detail: '<strong>Accès aux professionnels de santé et créneaux de sport</strong> sur le temps de travail'
+                        }
                     ]
                 }
             }
@@ -451,6 +735,7 @@
         const app = {
             currentCollege: null,
             selected: [],
+            modalRevendication: null,
 
             init() {
                 this.renderColleges();
@@ -508,23 +793,54 @@
 
                     btn.innerHTML = `
                         ${rank ? `<div class="rank-badge">${rank}</div>` : ''}
-                        <span>${rev}</span>
+                        <span>${rev.titre}</span>
                     `;
 
-                    btn.onclick = () => this.toggleSelect(idx);
+                    btn.onclick = () => this.openModal(idx);
                     list.appendChild(btn);
                 });
 
                 this.updateProgress();
             },
 
-            toggleSelect(idx) {
-                if (this.selected.includes(idx)) {
-                    this.selected = this.selected.filter(i => i !== idx);
-                } else if (this.selected.length < 6) {
-                    this.selected.push(idx);
+            openModal(idx) {
+                this.modalRevendication = idx;
+                const college = data.colleges[this.currentCollege];
+                const rev = college.revendications[idx];
+
+                document.getElementById('modalCategory').textContent = rev.categorie;
+                document.getElementById('modalTitle').textContent = rev.titre;
+                document.getElementById('modalDetail').innerHTML = rev.detail;
+
+                const isSelected = this.selected.includes(idx);
+                const btn = document.getElementById('modalSelectBtn');
+                if (isSelected) {
+                    btn.textContent = '✓ Déjà sélectionné';
+                    btn.disabled = true;
+                } else if (this.selected.length >= 6) {
+                    btn.textContent = '✗ Maximum atteint';
+                    btn.disabled = true;
+                } else {
+                    btn.textContent = '✓ Sélectionner';
+                    btn.disabled = false;
                 }
-                this.renderVote();
+
+                document.getElementById('modal').classList.add('active');
+            },
+
+            closeModal() {
+                document.getElementById('modal').classList.remove('active');
+                this.modalRevendication = null;
+            },
+
+            modalSelectRevendication() {
+                if (this.modalRevendication !== null && !this.selected.includes(this.modalRevendication)) {
+                    if (this.selected.length < 6) {
+                        this.selected.push(this.modalRevendication);
+                        this.closeModal();
+                        this.renderVote();
+                    }
+                }
             },
 
             updateProgress() {
@@ -546,7 +862,7 @@
 
                     this.selected.forEach(idx => {
                         const li = document.createElement('li');
-                        li.textContent = college.revendications[idx];
+                        li.textContent = college.revendications[idx].titre;
                         list.appendChild(li);
                     });
                 } else {
@@ -563,7 +879,7 @@
                 const surveyData = {
                     college: college.name,
                     timestamp: new Date().toLocaleString('fr-FR'),
-                    priorities: this.selected.map(idx => college.revendications[idx])
+                    priorities: this.selected.map(idx => college.revendications[idx].titre)
                 };
 
                 // Sauvegarder localement
@@ -599,7 +915,7 @@
 
                 this.selected.forEach(idx => {
                     const li = document.createElement('li');
-                    li.textContent = college.revendications[idx];
+                    li.textContent = college.revendications[idx].titre;
                     list.appendChild(li);
                 });
 
@@ -620,7 +936,16 @@
         };
 
         // Lancer l'app
-        document.addEventListener('DOMContentLoaded', () => app.init());
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+            
+            // Fermer modale au clic en dehors
+            document.getElementById('modal').addEventListener('click', (e) => {
+                if (e.target.id === 'modal') {
+                    app.closeModal();
+                }
+            });
+        });
     </script>
 </body>
 </html>
