@@ -1428,28 +1428,11 @@
             },
 
             async submitSurvey() {
-                // ✅ VÉRIFICATION SA80_1880 VIA GOOGLE SHEET (IP + NOM + PRÉNOM)
-                console.log("🔐 Début vérification SA80_1880...");
+                // ✅ ACCÈS LIBRE - TOUS LES VOTANTS AUTORISÉS
+                console.log("🔓 Accès libre activé - Pas de vérification SA80_1880");
                 console.log("   IP:", this.userIP);
                 console.log("   Nom:", this.userLastName);
                 console.log("   Prénom:", this.userName);
-                
-                try {
-                    const verification = await checkBeforeSA80_1880Submit(this.userIP, this.userName, this.userLastName);
-                    
-                    if (!verification.verified || !verification.canSubmit) {
-                        alert('❌ Vérification échouée\n\nVous ne figurez pas dans la liste des votants autorisés (code SA80_1880).\n\nVeuillez vérifier vos informations (IP + Prénom + Nom).');
-                        console.log('❌ Vérification SA80_1880 échouée');
-                        return;
-                    }
-                    
-                    console.log('✅ Vérification SA80_1880 réussie');
-                    
-                } catch (error) {
-                    console.error('❌ Erreur lors de la vérification SA80_1880 :', error);
-                    alert('❌ Erreur technique lors de la vérification.\n\nVeuillez réessayer dans quelques instants.');
-                    return;
-                }
 
                 // Vérifier VPN et doublons
                 if (this.isVPN) {

@@ -1,0 +1,110 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║          🚀 CRÉER LES 5 FEUILLES AUTOMATIQUEMENT                   ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 ÉTAPES (2 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣ OUVRIR LE GOOGLE SHEET
+
+   👉 https://docs.google.com/spreadsheets/d/17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q/edit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2️⃣ OUVRIR APPS SCRIPT
+
+   Menu → Extensions > Apps Script
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3️⃣ COPIER LE CODE
+
+   Fichier : INIT-FEUILLES.gs
+   
+   ⚡ COPIER TOUT LE CODE ⚡
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4️⃣ SUPPRIMER LE CODE PAR DÉFAUT
+
+   Dans Apps Script, supprimer :
+   - myFunction() {}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5️⃣ COLLER LE NOUVEAU CODE
+
+   Ctrl+A → Supprimer
+   Coller le code de INIT-FEUILLES.gs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6️⃣ ENREGISTRER
+
+   Ctrl+S
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7️⃣ EXÉCUTER LE SCRIPT
+
+   Menu déroulant (au-dessus du code) → Sélectionner "initializeSheets"
+   Cliquer le bouton ▶ "Exécuter"
+   
+   OU
+   
+   Appuyer Ctrl+Entrée
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8️⃣ AUTORISER L'ACCÈS (si demandé)
+
+   Une fenêtre : "Cet app ne dispose pas de vérification de sécurité"
+   Cliquer "Activer quand même" ou "Continuer"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9️⃣ VÉRIFIER LA CONSOLE
+
+   Bas de l'écran : Console
+   Message : ✅ Toutes les feuilles créées avec succès !
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ C'EST FINI !
+
+Retourner au Google Sheet → Les 5 feuilles sont créées ! 🎉
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 FEUILLES CRÉÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Résultats (données brutes, tous collèges)
+   Couleur header : Bleu (#003D82)
+
+2. Officiers (votes collège Officiers)
+   Couleur header : Bleu (#003D82)
+
+3. Non-Officiers (votes collège SPP)
+   Couleur header : Rouge (#E31C23)
+
+4. PATS (votes collège PATS)
+   Couleur header : Turquoise (#009B9B)
+
+5. Résumé (statistiques)
+   Couleur header : Gris (#666666)
+   Contient : Officiers, Non-Officiers, PATS, TOTAL
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ ERREUR : "Aucune fonction sélectionnée"
+
+Solution :
+  1. Déroulant du menu (où est écrit "myFunction")
+  2. Sélectionner "initializeSheets"
+  3. Cliquer ▶ Exécuter
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ ERREUR : "Permission refusée"
+
+Solution :
+  1. Bouton "Exécuter" donne une erreur
+  2. Cliquer le lien pour autoriser l'accès
+  3. Accepter les permissions
+  4. Relancer Exécuter
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+C'est tout ! Les feuilles sont maintenant prêtes à recevoir les votes ! 🚀

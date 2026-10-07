@@ -1,0 +1,85 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║            ⚡ CRÉER LES 5 FEUILLES EN 1 MIN (RAPIDE)             ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+👉 ÉTAPE 1 : Ouvrir le Google Sheet
+
+   https://docs.google.com/spreadsheets/d/17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q/edit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 2 : Ouvrir Apps Script
+
+   Menu → Extensions → Apps Script
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 3 : COPIER CE CODE EXACTEMENT
+
+function createAllSheets() {
+  const SHEET_ID = "17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q";
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  
+  // Supprimer la feuille par défaut
+  const defaultSheet = ss.getSheetByName("Feuille1");
+  if (defaultSheet) ss.deleteSheet(defaultSheet);
+  
+  // Créer les 5 feuilles
+  createSheet(ss, "Résultats", "#003D82");
+  createSheet(ss, "Officiers", "#003D82");
+  createSheet(ss, "Non-Officiers", "#E31C23");
+  createSheet(ss, "PATS", "#009B9B");
+  
+  // Résumé
+  let resume = ss.insertSheet("Résumé");
+  resume.appendRow(["Collège", "Nombre de votes"]);
+  resume.appendRow(["Officiers", 0]);
+  resume.appendRow(["Non-Officiers", 0]);
+  resume.appendRow(["PATS", 0]);
+  resume.getRange("A1:B1").setBackground("#666666").setFontColor("white").setFontWeight("bold");
+  
+  SpreadsheetApp.flush();
+}
+
+function createSheet(ss, name, color) {
+  let sheet = ss.insertSheet(name);
+  sheet.appendRow([
+    "Timestamp", "Prénom", "Nom", "IP",
+    "Priorité 1", "Priorité 2", "Priorité 3", "Priorité 4", "Priorité 5", "Priorité 6"
+  ]);
+  sheet.getRange("A1:J1").setBackground(color).setFontColor("white").setFontWeight("bold");
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 4 : Supprimer le code par défaut
+
+   Ctrl+A → Supprimer le "myFunction() {}"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 5 : Coller le code ci-dessus
+
+   Ctrl+V
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 6 : Enregistrer
+
+   Ctrl+S
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 7 : Exécuter
+
+   1. Menu déroulant (où est "myFunction") → Sélectionner "createAllSheets"
+   2. Cliquer ▶ "Exécuter"
+   3. Ou appuyer Ctrl+Entrée
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👉 ÉTAPE 8 : Vérifier
+
+   Bas de l'écran : Console
+   Vous devriez voir : ✅ Succès !
+
+   Puis aller au Google Sheet : Les 5 feuilles sont créées ! 🎉
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ C'EST TOUT ! Les feuilles vont maintenant se remplir quand on vote
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

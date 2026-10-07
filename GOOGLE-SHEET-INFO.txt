@@ -1,0 +1,122 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║        ✅ GOOGLE SHEET CRÉÉ AVEC SUCCÈS !                         ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+📊 DÉTAILS DU SHEET CRÉÉ
+
+Nom : Sondage SPP-PATS 2026
+ID : 17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q
+Lien : https://docs.google.com/spreadsheets/d/17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q/edit
+Propriétaire : croiset.mickael@gmail.com
+Date création : 07/10/2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 PROCHAINES ÉTAPES (3 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ÉTAPE 1 : Ajouter Apps Script (DÉJÀ CONFIGURÉ !)
+
+Le fichier google-apps-script-v2.js utilise maintenant l'ID correct :
+  const SHEET_ID = "17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q";
+
+👉 Action :
+1. Aller sur le lien Google Sheet ci-dessus
+2. Menu → Extensions > Apps Script
+3. Supprimer myFunction
+4. Copier TOUT le code de google-apps-script-v2.js
+5. Coller dans l'éditeur Apps Script
+6. Enregistrer (Ctrl+S)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ ÉTAPE 2 : Déployer le Script (1 min)
+
+1. Dans Apps Script : Menu > "Nouveau déploiement"
+2. Type : "Application Web"
+3. "Qui a accès" : "N'importe qui"
+4. Cliquer "Déployer"
+5. COPIER l'URL du déploiement :
+   https://script.google.com/macros/d/[COPIEZ_CEL_CI]/userwithscript
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ ÉTAPE 3 : Configurer index.html (1 min)
+
+1. Ouvrir index.html
+2. Chercher ligne ~800 : GOOGLE_APPS_SCRIPT_URL = ""
+3. Remplacer par l'URL de déploiement :
+   const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/d/...";
+4. Enregistrer
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ ÉTAPE 4 : Test local (1 min)
+
+1. Ouvrir app localement : python3 -m http.server 8000
+2. Voter pour un collège
+3. Aller au Google Sheet
+4. Vérifier que les données apparaissent ✓
+5. Vérifier feuilles créées (Résultats, Officiers, Non-Officiers, PATS, Résumé) ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📁 FICHIERS CLÉS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ google-apps-script-v2.js
+   └─ Prêt avec l'ID correct du Sheet
+
+✅ index.html
+   └─ À configurer avec URL de déploiement
+
+✅ GOOGLE-SHEETS-SETUP-5MIN.md
+   └─ Guide rapide pour suivre les étapes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎁 BONUS : Feuilles seront créées automatiquement
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Lors du premier vote, Apps Script crée automatiquement :
+
+1. Feuille "Résultats" (données brutes)
+   Colonnes : Timestamp | Collège | Prénom | Nom | IP | Pri1-6
+
+2. Feuille "Officiers" (votes collège)
+   Colonnes : Timestamp | Prénom | Nom | IP | Pri1-6
+
+3. Feuille "Non-Officiers" (votes collège)
+   Colonnes : Timestamp | Prénom | Nom | IP | Pri1-6
+
+4. Feuille "PATS" (votes collège)
+   Colonnes : Timestamp | Prénom | Nom | IP | Pri1-6
+
+5. Feuille "Résumé" (statistiques)
+   Colonnes : Collège | Nombre de votes
+
+Pas besoin de les créer manuellement ! ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔗 LIEN DIRECT AU GOOGLE SHEET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👉 Cliquez ici pour ouvrir :
+https://docs.google.com/spreadsheets/d/17tnj8SS68OLEO_2JqXfvjO9nSzXYLuvPgVX8AgxyT3Q/edit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⏱️ TIMING TOTAL : ~5-10 min
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Ajouter Apps Script (2 min)
+2. Déployer (1 min)
+3. Configurer index.html (1 min)
+4. Test local (1 min)
+
+= 5 min pour tout ! 🚀
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ C'EST FAIT !
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Google Sheet créé ✅
+ID configuré dans google-apps-script-v2.js ✅
+Vous pouvez maintenant suivre les étapes ci-dessus
+
+Besoin d'aide ? → Consulter GOOGLE-SHEETS-SETUP-5MIN.md
