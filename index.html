@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sondage SPP-PATS 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Écran 1: Sélection collège */
+        .colleges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .college-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid;
+        }
+
+        .college-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .college-card h2 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .college-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .college-card .count {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Écran 2: Vote */
+        .back-btn {
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .progress-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .progress-text {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-fill {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .revendications-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .revendication-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.95rem;
+        }
+
+        .revendication-btn:hover:not(.selected) {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .revendication-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .revendication-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .rank-badge {
+            width: 36px;
+            height: 36px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .revendication-btn.selected .rank-badge {
+            background: white;
+            color: #667eea;
+        }
+
+        .results-preview {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 3px solid #667eea;
+        }
+
+        .results-preview h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .results-preview ol {
+            padding-left: 25px;
+            color: #666;
+        }
+
+        .results-preview li {
+            margin-bottom: 10px;
+        }
+
+        /* Écran 3: Succès */
+        .success-screen {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 0.6s ease-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-screen h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .success-screen p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Boutons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .colleges-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗳️ Sondage SPP-PATS</h1>
+            <p>Élections Professionnelles 2026 - Priorités de revendications</p>
+        </div>
+
+        <!-- ÉCRAN 1: Sélection Collège -->
+        <div id="collegesScreen" class="screen active">
+            <div class="colleges-grid" id="collegesGrid"></div>
+        </div>
+
+        <!-- ÉCRAN 2: Vote -->
+        <div id="voteScreen" class="screen">
+            <button class="back-btn" onclick="app.backToColleges()">← Retour</button>
+
+            <div class="progress-bar">
+                <div class="progress-text">
+                    <span id="selectedCount">0</span> / 6 sélectionnés
+                </div>
+                <div class="progress-fill">
+                    <div id="progressBar" class="progress-bar-inner" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="revendications-list" id="revendicationsList"></div>
+
+            <div id="resultsPreview" class="results-preview" style="display: none;">
+                <h3>✓ Vos priorités :</h3>
+                <ol id="resultsList"></ol>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="app.backToColleges()">← Recommencer</button>
+                <button class="btn btn-primary" id="submitBtn" onclick="app.submitSurvey()" disabled>
+                    ✓ Valider mon sondage
+                </button>
+            </div>
+        </div>
+
+        <!-- ÉCRAN 3: Succès -->
+        <div id="successScreen" class="screen">
+            <div class="success-screen">
+                <div class="success-icon">✅</div>
+                <h2>Merci pour votre participation !</h2>
+                <p>Votre sondage a été enregistré avec succès.</p>
+                
+                <div id="successBox" style="background: #f8f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
+                    <h3 style="text-align: center; margin-bottom: 15px;">Votre classement :</h3>
+                    <ol id="successList" style="padding-left: 25px; color: #666;"></ol>
+                </div>
+
+                <button class="btn btn-primary" onclick="app.backToColleges()" style="margin-top: 20px;">
+                    Participer à un autre collège
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION GOOGLE SHEETS (optionnel)
+        const GOOGLE_APPS_SCRIPT_URL = "";
+
+        // DONNÉES
+        const data = {
+            colleges: {
+                officiers: {
+                    name: 'Collège Officiers',
+                    description: 'Infirmiers-chefs et Commandants',
+                    color: '#003D82',
+                    revendications: [
+                        'Adéquation Grade / Emploi',
+                        'Missions transverses récompensées',
+                        'Tuilage lors des mobilités',
+                        'Création de postes d\'adjoints',
+                        'Protection du régime SHR',
+                        'Droit à la déconnexion',
+                        'Cohésion d\'équipe',
+                        'Simplification numérique',
+                        'Activité opérationnelle',
+                        'Règlement intérieur',
+                        'Mobilité / véhicules'
+                    ]
+                },
+                nono: {
+                    name: 'Collège Non-Officiers',
+                    description: 'Sapeurs-Pompiers SPP',
+                    color: '#E31C23',
+                    revendications: [
+                        'Effectifs adaptés',
+                        'Répartition des rôles',
+                        'Organisation du travail soutenable',
+                        'Reconnaissance de l\'investissement',
+                        'Évolutions de carrière fluides',
+                        'Sécurité opérationnelle',
+                        'Usure professionnelle',
+                        'Protection Sociale Complémentaire',
+                        'Catégorie super-active',
+                        'Revalorisation des carrières',
+                        'Cycles de travail',
+                        'Cancers professionnels reconnus'
+                    ]
+                },
+                pats: {
+                    name: 'Collège PATS',
+                    description: 'Personnels Administratifs et Techniques',
+                    color: '#009B9B',
+                    revendications: [
+                        'Avancement à 100%',
+                        'Fin des quotas injustes',
+                        'Revalorisation RIFSEEP',
+                        'Mobilités transparentes',
+                        'PSC mutuelle/prévoyance',
+                        'Garanties maladie grave',
+                        'Sanctuarisation des acquis',
+                        'Télétravail 2j/semaine',
+                        'Management bienveillant',
+                        'Protection du régime SHR',
+                        'Accès professionnels santé',
+                        'Prévention TMS'
+                    ]
+                }
+            }
+        };
+
+        // APP
+        const app = {
+            currentCollege: null,
+            selected: [],
+
+            init() {
+                this.renderColleges();
+            },
+
+            renderColleges() {
+                const grid = document.getElementById('collegesGrid');
+                grid.innerHTML = '';
+
+                Object.entries(data.colleges).forEach(([key, college]) => {
+                    const card = document.createElement('div');
+                    card.className = 'college-card';
+                    card.style.borderLeftColor = college.color;
+                    card.onclick = () => this.selectCollege(key);
+
+                    card.innerHTML = `
+                        <h2>${college.name}</h2>
+                        <p>${college.description}</p>
+                        <div class="count">📋 ${college.revendications.length} revendications</div>
+                    `;
+
+                    grid.appendChild(card);
+                });
+            },
+
+            selectCollege(key) {
+                this.currentCollege = key;
+                this.selected = [];
+                this.showScreen('voteScreen');
+                this.renderVote();
+            },
+
+            renderVote() {
+                const college = data.colleges[this.currentCollege];
+                const list = document.getElementById('revendicationsList');
+                list.innerHTML = '';
+
+                document.documentElement.style.setProperty('--primary-color', college.color);
+
+                college.revendications.forEach((rev, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'revendication-btn';
+
+                    const isSelected = this.selected.includes(idx);
+                    const rank = isSelected ? this.selected.indexOf(idx) + 1 : null;
+                    const isFull = !isSelected && this.selected.length >= 6;
+
+                    btn.style.borderColor = college.color;
+                    btn.disabled = isFull;
+
+                    if (isSelected) {
+                        btn.classList.add('selected');
+                        btn.style.background = college.color;
+                    }
+
+                    btn.innerHTML = `
+                        ${rank ? `<div class="rank-badge">${rank}</div>` : ''}
+                        <span>${rev}</span>
+                    `;
+
+                    btn.onclick = () => this.toggleSelect(idx);
+                    list.appendChild(btn);
+                });
+
+                this.updateProgress();
+            },
+
+            toggleSelect(idx) {
+                if (this.selected.includes(idx)) {
+                    this.selected = this.selected.filter(i => i !== idx);
+                } else if (this.selected.length < 6) {
+                    this.selected.push(idx);
+                }
+                this.renderVote();
+            },
+
+            updateProgress() {
+                const college = data.colleges[this.currentCollege];
+                const percent = (this.selected.length / 6) * 100;
+
+                document.getElementById('progressBar').style.width = percent + '%';
+                document.getElementById('progressBar').style.background = college.color;
+                document.getElementById('selectedCount').textContent = this.selected.length;
+                document.getElementById('submitBtn').disabled = this.selected.length === 0;
+
+                if (this.selected.length > 0) {
+                    const preview = document.getElementById('resultsPreview');
+                    preview.style.display = 'block';
+                    preview.style.borderColor = college.color;
+
+                    const list = document.getElementById('resultsList');
+                    list.innerHTML = '';
+
+                    this.selected.forEach(idx => {
+                        const li = document.createElement('li');
+                        li.textContent = college.revendications[idx];
+                        list.appendChild(li);
+                    });
+                } else {
+                    document.getElementById('resultsPreview').style.display = 'none';
+                }
+            },
+
+            submitSurvey() {
+                const btn = document.getElementById('submitBtn');
+                btn.disabled = true;
+                btn.textContent = '⏳ Envoi...';
+
+                const college = data.colleges[this.currentCollege];
+                const surveyData = {
+                    college: college.name,
+                    timestamp: new Date().toLocaleString('fr-FR'),
+                    priorities: this.selected.map(idx => college.revendications[idx])
+                };
+
+                // Sauvegarder localement
+                try {
+                    const existing = JSON.parse(localStorage.getItem('sondageResults') || '[]');
+                    existing.push(surveyData);
+                    localStorage.setItem('sondageResults', JSON.stringify(existing));
+                } catch (e) {
+                    console.error('Erreur localStorage:', e);
+                }
+
+                // Envoyer à Google Sheets si configuré
+                if (GOOGLE_APPS_SCRIPT_URL) {
+                    fetch(GOOGLE_APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(surveyData),
+                        mode: 'no-cors'
+                    }).catch(err => console.error('Erreur envoi:', err));
+                }
+
+                // Afficher succès
+                setTimeout(() => {
+                    this.showSuccess();
+                    btn.disabled = false;
+                    btn.textContent = '✓ Valider mon sondage';
+                }, 500);
+            },
+
+            showSuccess() {
+                const college = data.colleges[this.currentCollege];
+                const list = document.getElementById('successList');
+                list.innerHTML = '';
+
+                this.selected.forEach(idx => {
+                    const li = document.createElement('li');
+                    li.textContent = college.revendications[idx];
+                    list.appendChild(li);
+                });
+
+                this.showScreen('successScreen');
+            },
+
+            backToColleges() {
+                this.currentCollege = null;
+                this.selected = [];
+                this.showScreen('collegesScreen');
+            },
+
+            showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(screenId).classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        };
+
+        // Lancer l'app
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>

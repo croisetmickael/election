@@ -1,0 +1,24 @@
+# Vercel
+.vercel
+.vercel/**
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Node (si jamais)
+node_modules/
+npm-debug.log
+yarn-error.log
