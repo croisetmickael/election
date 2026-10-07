@@ -290,6 +290,139 @@
             background: #e0e0e0;
         }
 
+        /* Modal RGPD */
+        .rgpd-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .rgpd-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rgpd-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 650px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .rgpd-content h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .rgpd-content h2 {
+            color: #667eea;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .rgpd-content p, .rgpd-content li {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .rgpd-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .rgpd-content li {
+            margin-bottom: 8px;
+        }
+
+        .rgpd-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .rgpd-checkbox input {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .rgpd-checkbox label {
+            cursor: pointer;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .rgpd-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .rgpd-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rgpd-btn-accept {
+            background: #667eea;
+            color: white;
+        }
+
+        .rgpd-btn-accept:hover:not(:disabled) {
+            background: #5568d3;
+        }
+
+        .rgpd-btn-accept:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .rgpd-btn-decline {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .rgpd-btn-decline:hover {
+            background: #e0e0e0;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f44336;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00A86B;
+        }
+
         @media (max-width: 768px) {
             .modal-content {
                 margin: 20px;
@@ -483,6 +616,62 @@
                 <button class="btn btn-primary" id="submitBtn" onclick="app.submitSurvey()" disabled>
                     ✓ Valider mon sondage
                 </button>
+            </div>
+        </div>
+
+        <!-- MODAL: RGPD & Conditions d'utilisation -->
+        <div id="rgpdModal" class="rgpd-modal active">
+            <div class="rgpd-content">
+                <h1>📋 Conditions d'utilisation</h1>
+                
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <h2>À propos de ce sondage</h2>
+                <p>
+                    Ce sondage est destiné aux élections professionnelles 2026 SPP-PATS.
+                    Il permet de collecter vos priorités de revendications de manière sécurisée et confidentielle.
+                </p>
+
+                <h2>Protection de vos données (RGPD)</h2>
+                <p>
+                    Conformément à la <strong>Loi Informatique et Libertés</strong> et au <strong>RGPD</strong> :
+                </p>
+                <ul>
+                    <li><strong>Données collectées :</strong> Votre collège, vos priorités de revendications, et votre adresse IP (pour éviter les doublons)</li>
+                    <li><strong>Finalité :</strong> Collecter les priorités des agents pour les négociations syndicales</li>
+                    <li><strong>Conservation :</strong> Les données sont conservées pendant la durée du processus électoral (env. 3 mois)</li>
+                    <li><strong>Destinataires :</strong> SPP-PATS Syndicat Autonome et représentants autorisés</li>
+                    <li><strong>Sécurité :</strong> Vos données sont protégées par HTTPS et hébergées de manière sécurisée</li>
+                    <li><strong>Vos droits :</strong> Accès, rectification, suppression - contactez le syndicat</li>
+                </ul>
+
+                <h2>Confidentialité</h2>
+                <p>
+                    Vos réponses sont <strong>confidentielles</strong>. Seule votre IP est enregistrée pour éviter les doublons.
+                    Votre identité n'est jamais associée à vos votes.
+                </p>
+
+                <h2>Interdictions</h2>
+                <ul>
+                    <li>Une seule réponse par adresse IP</li>
+                    <li>Les VPN et proxies sont détectés et bloqués</li>
+                    <li>Toute tentative de fraude sera enregistrée</li>
+                </ul>
+
+                <h2>Acceptation des conditions</h2>
+                <div class="rgpd-checkbox">
+                    <input type="checkbox" id="rgpdAccept">
+                    <label for="rgpdAccept">J'accepte les conditions d'utilisation et la politique RGPD</label>
+                </div>
+
+                <div class="rgpd-buttons">
+                    <button class="rgpd-btn rgpd-btn-accept" id="rgpdAcceptBtn" onclick="app.acceptRGPD()" disabled>
+                        ✓ Accepter et continuer
+                    </button>
+                    <button class="rgpd-btn rgpd-btn-decline" onclick="app.declineRGPD()">
+                        ✕ Refuser
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -736,9 +925,105 @@
             currentCollege: null,
             selected: [],
             modalRevendication: null,
+            userIP: null,
+            isVPN: false,
+            rgpdAccepted: false,
 
-            init() {
+            async init() {
+                // Récupérer l'IP de l'utilisateur
+                await this.fetchUserIP();
+                
+                // Vérifier si RGPD déjà accepté
+                const rgpdAcceptedLocal = localStorage.getItem('rgpdAccepted');
+                if (rgpdAcceptedLocal) {
+                    this.rgpdAccepted = true;
+                    document.getElementById('rgpdModal').classList.remove('active');
+                    this.renderColleges();
+                } else {
+                    // Afficher modale RGPD
+                    document.getElementById('rgpdModal').classList.add('active');
+                    this.setupRGPDCheckbox();
+                }
+            },
+
+            async fetchUserIP() {
+                try {
+                    const response = await fetch('https://ipapi.co/json/', { 
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const data = await response.json();
+                    this.userIP = data.ip;
+                    
+                    // Détecter VPN (simple heuristique)
+                    this.isVPN = this.detectVPN(data);
+                    
+                    // Vérifier si cette IP a déjà voté
+                    await this.checkDuplicateVote();
+                } catch (error) {
+                    console.error('Erreur récupération IP:', error);
+                    this.userIP = 'unknown';
+                }
+            },
+
+            detectVPN(data) {
+                // Heuristiques simples pour détecter VPN
+                const vpnIndicators = [
+                    data.is_vpn,
+                    data.is_proxy,
+                    data.is_datacenter,
+                    data.threat?.is_vpn,
+                ];
+                return vpnIndicators.some(v => v === true);
+            },
+
+            async checkDuplicateVote() {
+                try {
+                    const votes = JSON.parse(localStorage.getItem('sondageResults') || '[]');
+                    const ipVotes = JSON.parse(localStorage.getItem('ipVotes') || '{}');
+                    
+                    if (ipVotes[this.userIP]) {
+                        this.showVoteError('Cette adresse IP a déjà participé au sondage. Une seule réponse par adresse IP est autorisée.');
+                    }
+                    
+                    if (this.isVPN) {
+                        this.showVoteError('L\'utilisation d\'un VPN ou proxy a été détectée. Pour assurer l\'intégrité du sondage, les VPN ne sont pas autorisés.');
+                    }
+                } catch (error) {
+                    console.error('Erreur vérification doublon:', error);
+                }
+            },
+
+            setupRGPDCheckbox() {
+                const checkbox = document.getElementById('rgpdAccept');
+                const btn = document.getElementById('rgpdAcceptBtn');
+                
+                checkbox.addEventListener('change', () => {
+                    btn.disabled = !checkbox.checked;
+                });
+            },
+
+            acceptRGPD() {
+                if (!document.getElementById('rgpdAccept').checked) return;
+                
+                localStorage.setItem('rgpdAccepted', 'true');
+                this.rgpdAccepted = true;
+                document.getElementById('rgpdModal').classList.remove('active');
                 this.renderColleges();
+            },
+
+            declineRGPD() {
+                this.showVoteError('Vous devez accepter les conditions d\'utilisation pour participer au sondage.');
+            },
+
+            showVoteError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                if (errorDiv && document.getElementById('rgpdModal').classList.contains('active')) {
+                    errorDiv.textContent = message;
+                    errorDiv.style.display = 'block';
+                } else {
+                    alert(message);
+                }
             },
 
             renderColleges() {
@@ -871,6 +1156,19 @@
             },
 
             submitSurvey() {
+                // Vérifier VPN et doublons
+                if (this.isVPN) {
+                    alert('❌ L\'utilisation d\'un VPN a été détectée. Vous ne pouvez pas voter avec un VPN.');
+                    return;
+                }
+
+                // Vérifier doublon
+                const ipVotes = JSON.parse(localStorage.getItem('ipVotes') || '{}');
+                if (ipVotes[this.userIP]) {
+                    alert('❌ Cette adresse IP a déjà participé. Une seule réponse par adresse IP est autorisée.');
+                    return;
+                }
+
                 const btn = document.getElementById('submitBtn');
                 btn.disabled = true;
                 btn.textContent = '⏳ Envoi...';
@@ -879,6 +1177,7 @@
                 const surveyData = {
                     college: college.name,
                     timestamp: new Date().toLocaleString('fr-FR'),
+                    ip: this.userIP, // Enregistrer l'IP
                     priorities: this.selected.map(idx => college.revendications[idx].titre)
                 };
 
@@ -887,6 +1186,10 @@
                     const existing = JSON.parse(localStorage.getItem('sondageResults') || '[]');
                     existing.push(surveyData);
                     localStorage.setItem('sondageResults', JSON.stringify(existing));
+                    
+                    // Enregistrer l'IP pour éviter les doublons
+                    ipVotes[this.userIP] = true;
+                    localStorage.setItem('ipVotes', JSON.stringify(ipVotes));
                 } catch (e) {
                     console.error('Erreur localStorage:', e);
                 }
@@ -919,13 +1222,40 @@
                     list.appendChild(li);
                 });
 
+                // Afficher info IP
+                const successBox = document.getElementById('successBox');
+                const ipInfo = document.createElement('div');
+                ipInfo.style.cssText = 'margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; font-size: 0.85rem; color: #999;';
+                ipInfo.innerHTML = `
+                    <p>🔒 <strong>Sécurité :</strong> Votre adresse IP (${this.userIP}) a été enregistrée pour prévenir les doublons.</p>
+                    <p>📋 <strong>RGPD :</strong> Vos données sont protégées et vous avez le droit d'accès.</p>
+                `;
+                
+                const existingIP = successBox.querySelector('[style*="margin-top: 15px"]');
+                if (existingIP) existingIP.remove();
+                successBox.appendChild(ipInfo);
+
                 this.showScreen('successScreen');
             },
 
             backToColleges() {
                 this.currentCollege = null;
                 this.selected = [];
-                this.showScreen('collegesScreen');
+                
+                // Vérifier si un vote a déjà été enregistré
+                const ipVotes = JSON.parse(localStorage.getItem('ipVotes') || '{}');
+                if (ipVotes[this.userIP]) {
+                    alert('⚠️ Votre adresse IP a déjà participé. Vous ne pouvez pas voter une autre fois.');
+                    this.showScreen('collegesScreen');
+                    // Désactiver les collèges
+                    document.querySelectorAll('.college-card').forEach(card => {
+                        card.style.opacity = '0.5';
+                        card.style.cursor = 'not-allowed';
+                        card.onclick = () => alert('Vous avez déjà voté. Un seul vote par adresse IP est autorisé.');
+                    });
+                } else {
+                    this.showScreen('collegesScreen');
+                }
             },
 
             showScreen(screenId) {
@@ -936,8 +1266,8 @@
         };
 
         // Lancer l'app
-        document.addEventListener('DOMContentLoaded', () => {
-            app.init();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await app.init();
             
             // Fermer modale au clic en dehors
             document.getElementById('modal').addEventListener('click', (e) => {
