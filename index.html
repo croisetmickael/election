@@ -794,7 +794,14 @@
 
     <script>
         // CONFIGURATION GOOGLE SHEETS (optionnel)
-        const GOOGLE_APPS_SCRIPT_URL = "";
+        // INSTRUCTIONS : Voir GOOGLE-SHEETS-V2-PAR-COLLEGE.md
+        // 1. Créer Google Sheet
+        // 2. Ajouter Apps Script (google-apps-script-v2.js)
+        // 3. Déployer comme "Application Web"
+        // 4. Copier l'URL du déploiement ici :
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/d/VOTRE_SCRIPT_ID/usercontent";
+        // ⚠️ À REMPLACER PAR VOTRE URL : https://script.google.com/macros/d/...usercontent
+        // Créée lors du déploiement du Google Apps Script
 
         // DONNÉES
         const data = {
@@ -1020,17 +1027,9 @@
                     this.rgpdAccepted = true;
                     document.getElementById('rgpdModal').classList.remove('active');
                     
-                    // Vérifier si cette IP a déjà voté (juste IP, pas nom/prénom)
-                    const votes = JSON.parse(localStorage.getItem('sondageResults') || '[]');
-                    const existingVote = votes.find(v => v.ip === this.userIP);
-                    
-                    if (existingVote) {
-                        // Cette IP a déjà voté
-                        this.showAlreadyVoted(existingVote);
-                    } else {
-                        // Première fois pour cette IP → afficher écran identité
-                        this.showScreen('identityScreen');
-                    }
+                    // Afficher écran d'identité en premier
+                    // (on demande nom/prénom avant de vérifier si déjà voté)
+                    this.showScreen('identityScreen');
                 } else {
                     // Afficher modale RGPD
                     document.getElementById('rgpdModal').classList.add('active');
@@ -1247,15 +1246,38 @@
                 }
             },
 
-            submitSurvey() {
+            async submitSurvey() {
+                // ✅ VÉRIFICATION SA80_1880 VIA GOOGLE SHEET (IP + NOM + PRÉNOM)
+                console.log("🔐 Début vérification SA80_1880...");
+                console.log("   IP:", this.userIP);
+                console.log("   Nom:", this.userLastName);
+                console.log("   Prénom:", this.userName);
+                
+                try {
+                    const verification = await checkBeforeSA80_1880Submit(this.userIP, this.userName, this.userLastName);
+                    
+                    if (!verification.verified || !verification.canSubmit) {
+                        alert('❌ Vérification échouée\n\nVous ne figurez pas dans la liste des votants autorisés (code SA80_1880).\n\nVeuillez vérifier vos informations (IP + Prénom + Nom).');
+                        console.log('❌ Vérification SA80_1880 échouée');
+                        return;
+                    }
+                    
+                    console.log('✅ Vérification SA80_1880 réussie');
+                    
+                } catch (error) {
+                    console.error('❌ Erreur lors de la vérification SA80_1880 :', error);
+                    alert('❌ Erreur technique lors de la vérification.\n\nVeuillez réessayer dans quelques instants.');
+                    return;
+                }
+
                 // Vérifier VPN et doublons
                 if (this.isVPN) {
                     alert('❌ L\'utilisation d\'un VPN a été détectée. Vous ne pouvez pas voter avec un VPN.');
                     return;
                 }
 
-                // Vérifier si déjà modifié une fois (juste par IP)
-                const modificationKey = 'responseModified_' + this.userIP;
+                // Vérifier si déjà modifié une fois (IP + Nom + Prénom)
+                const modificationKey = 'responseModified_' + this.userIP + '_' + this.userName + this.userLastName;
                 if (localStorage.getItem(modificationKey)) {
                     alert('❌ Vous avez déjà modifié votre réponse une fois. Une seule modification est autorisée.');
                     return;
@@ -1289,13 +1311,23 @@
                     console.error('Erreur localStorage:', e);
                 }
 
-                // Envoyer à Google Sheets si configuré
-                if (GOOGLE_APPS_SCRIPT_URL) {
-                    fetch(GOOGLE_APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(surveyData),
-                        mode: 'no-cors'
-                    }).catch(err => console.error('Erreur envoi:', err));
+                // ✅ ENREGISTRER LA RÉPONSE SA80_1880 DANS LE GOOGLE SHEET
+                console.log("💾 Enregistrement de la réponse SA80_1880...");
+                try {
+                    const recordResult = await recordSA80_1880ToSheet(
+                        this.userIP, 
+                        this.userName, 
+                        this.userLastName, 
+                        surveyData.priorities
+                    );
+                    
+                    if (recordResult.success) {
+                        console.log('✅ Réponse enregistrée avec succès dans le Google Sheet');
+                    } else {
+                        console.error('⚠️ Erreur lors de l\'enregistrement :', recordResult.error);
+                    }
+                } catch (error) {
+                    console.error('❌ Erreur lors de l\'enregistrement SA80_1880 :', error);
                 }
 
                 // Afficher succès
@@ -1384,9 +1416,22 @@
                 const identity = { firstName, lastName, timestamp: new Date().toLocaleString('fr-FR') };
                 localStorage.setItem('userIdentity', JSON.stringify(identity));
                 
-                // Aller au sondage
-                this.renderColleges();
-                this.showScreen('collegesScreen');
+                // Vérifier si cette personne (IP + Nom + Prénom) a déjà voté
+                const votes = JSON.parse(localStorage.getItem('sondageResults') || '[]');
+                const existingVote = votes.find(v => 
+                    v.ip === this.userIP && 
+                    v.firstName === firstName && 
+                    v.lastName === lastName
+                );
+                
+                if (existingVote) {
+                    // Cette personne a déjà voté → afficher écran "Réponse déjà enregistrée"
+                    this.showAlreadyVoted(existingVote);
+                } else {
+                    // Première fois pour cette personne → aller au sondage
+                    this.renderColleges();
+                    this.showScreen('collegesScreen');
+                }
             },
 
             showAlreadyVoted(existingVote) {
@@ -1409,13 +1454,18 @@
                 // Réinitialiser pour permettre une modification
                 this.selected = [];
                 
-                // Supprimer le vote existant pour cette IP
+                // Supprimer le vote existant pour cette IP + Nom + Prénom
                 let votes = JSON.parse(localStorage.getItem('sondageResults') || '[]');
-                votes = votes.filter(v => v.ip !== this.userIP);
+                votes = votes.filter(v => !(
+                    v.ip === this.userIP && 
+                    v.firstName === this.userName && 
+                    v.lastName === this.userLastName
+                ));
                 localStorage.setItem('sondageResults', JSON.stringify(votes));
                 
                 // Marquer comme modifié pour éviter la modification suivante
-                localStorage.setItem('responseModified_' + this.userIP, 'true');
+                const modKey = 'responseModified_' + this.userIP + '_' + this.userName + this.userLastName;
+                localStorage.setItem(modKey, 'true');
                 
                 // Retourner au sondage
                 this.renderColleges();
@@ -1441,5 +1491,8 @@
             });
         });
     </script>
+
+    <!-- ✅ VÉRIFICATION SA80_1880 VIA GOOGLE SHEET -->
+    <script src="VERIFICATION-SA80_1880-SHEET.js"></script>
 </body>
 </html>
