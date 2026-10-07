@@ -559,6 +559,158 @@
             background: #f8f9ff;
         }
 
+        /* Bouton Réinitialiser */
+        .btn-reset {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-reset:hover {
+            background-color: #5a6268;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-reset:active {
+            transform: translateY(0);
+        }
+
+        /* Modal Vérification Code */
+        .reset-code-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reset-code-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reset-code-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .reset-code-content h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .reset-code-content p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .reset-code-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .reset-code-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .reset-code-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .reset-code-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .reset-code-btn-confirm {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .reset-code-btn-confirm:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .reset-code-btn-confirm:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-code-btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .reset-code-btn-cancel:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .reset-code-error {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .reset-code-error.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Responsif */
         @media (max-width: 768px) {
             .header h1 {
@@ -580,6 +732,11 @@
     </style>
 </head>
 <body>
+    <!-- ✅ BOUTON RÉINITIALISER -->
+    <button class="btn-reset" onclick="app.resetSurvey()" title="Recommencer avec le code et le consentement RGPD">
+        🔄 Réinitialiser
+    </button>
+
     <div class="container">
         <div class="header">
             <h1>🗳️ Sondage SPP-PATS</h1>
@@ -748,6 +905,30 @@
                     </button>
                     <button class="rgpd-btn rgpd-btn-decline" onclick="app.declineRGPD()">
                         ✕ Refuser
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: Vérification Code pour Réinitialiser -->
+        <div id="resetCodeModal" class="reset-code-modal">
+            <div class="reset-code-content">
+                <h2>🔐 Vérification Sécurité</h2>
+                <p>Veuillez entrer le code de réinitialisation pour confirmer</p>
+                
+                <div class="reset-code-error" id="resetCodeError"></div>
+                
+                <input type="password" id="resetCodeInput" class="reset-code-input" 
+                       placeholder="Entrez le code" maxlength="20">
+                
+                <div class="reset-code-buttons">
+                    <button class="reset-code-btn reset-code-btn-confirm" id="resetCodeConfirm" 
+                            onclick="app.confirmResetWithCode()">
+                        ✓ Valider
+                    </button>
+                    <button class="reset-code-btn reset-code-btn-cancel" 
+                            onclick="app.cancelResetCode()">
+                        ✕ Annuler
                     </button>
                 </div>
             </div>
@@ -1476,6 +1657,156 @@
                 // Retour à l'écran d'identité
                 document.getElementById('identityForm').reset();
                 this.showScreen('identityScreen');
+            },
+
+            resetSurvey() {
+                // ✅ RÉINITIALISER LE SONDAGE COMPLET
+                console.log("🔄 Réinitialisation du sondage...");
+                
+                // Afficher la modal de vérification du code
+                console.log("🔐 Affichage de la modale de vérification du code...");
+                const resetCodeModal = document.getElementById('resetCodeModal');
+                const resetCodeInput = document.getElementById('resetCodeInput');
+                const resetCodeError = document.getElementById('resetCodeError');
+                
+                if (resetCodeModal) {
+                    resetCodeModal.classList.add('active');
+                }
+                if (resetCodeInput) {
+                    resetCodeInput.value = '';
+                    resetCodeInput.focus();
+                }
+                if (resetCodeError) {
+                    resetCodeError.classList.remove('show');
+                    resetCodeError.textContent = '';
+                }
+                
+                return; // Attendre la confirmation du code
+            },
+
+            confirmResetWithCode() {
+                // ✅ VÉRIFIER LE CODE ET RÉINITIALISER
+                console.log("🔐 Vérification du code...");
+                
+                const resetCodeInput = document.getElementById('resetCodeInput');
+                const resetCodeError = document.getElementById('resetCodeError');
+                const enteredCode = resetCodeInput.value.trim();
+                
+                // Code de sécurité
+                const RESET_CODE = "SA80_1880";  // ⚠️ À PERSONNALISER SI BESOIN
+                
+                if (enteredCode !== RESET_CODE) {
+                    console.error("❌ Code incorrect");
+                    if (resetCodeError) {
+                        resetCodeError.textContent = '❌ Code incorrect. Veuillez réessayer.';
+                        resetCodeError.classList.add('show');
+                    }
+                    resetCodeInput.value = '';
+                    resetCodeInput.focus();
+                    return;
+                }
+                
+                console.log("✅ Code correct - Réinitialisation en cours...");
+                
+                // Masquer la modal
+                const resetCodeModal = document.getElementById('resetCodeModal');
+                if (resetCodeModal) {
+                    resetCodeModal.classList.remove('active');
+                }
+                
+                // Effacer tout le localStorage
+                console.log("💾 Effacement des données locales...");
+                
+                // Données de sondage
+                localStorage.removeItem('userIdentity');
+                localStorage.removeItem('sondageResults');
+                localStorage.removeItem('ipVotes');
+                
+                // Consentement RGPD
+                localStorage.removeItem('rgpdAccepted');
+                
+                // Drapeaux de modification (tous les responseModified_*)
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.startsWith('responseModified_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                
+                // Réinitialiser l'état de l'app
+                this.userName = null;
+                this.userLastName = null;
+                this.userIP = null;
+                this.rgpdAccepted = false;
+                this.selected = [];
+                this.currentCollege = null;
+                this.modalRevendication = null;
+                this.isVPN = false;
+                
+                // Réinitialiser le formulaire d'identité
+                document.getElementById('identityForm').reset();
+                
+                // Effacer les erreurs
+                const errorDiv = document.getElementById('identityError');
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                    errorDiv.textContent = '';
+                }
+                
+                // Afficher la modale RGPD
+                console.log("📋 Affichage du consentement RGPD...");
+                const rgpdModal = document.getElementById('rgpdModal');
+                const rgpdCheckbox = document.getElementById('rgpdAccept');
+                const rgpdAcceptBtn = document.getElementById('rgpdAcceptBtn');
+                
+                if (rgpdModal) {
+                    rgpdModal.classList.add('active');
+                }
+                if (rgpdCheckbox) {
+                    rgpdCheckbox.checked = false;
+                }
+                if (rgpdAcceptBtn) {
+                    rgpdAcceptBtn.disabled = true;
+                }
+                
+                // Masquer tous les écrans
+                this.hideAllScreens();
+                
+                // Afficher l'écran d'identité en arrière-plan
+                this.showScreen('identityScreen');
+                
+                console.log("✅ Sondage réinitialisé - RGPD visible");
+            },
+
+            cancelResetCode() {
+                // ✅ ANNULER LA RÉINITIALISATION
+                console.log("❌ Réinitialisation annulée");
+                
+                // Masquer la modal
+                const resetCodeModal = document.getElementById('resetCodeModal');
+                if (resetCodeModal) {
+                    resetCodeModal.classList.remove('active');
+                }
+                
+                // Vider le champ
+                const resetCodeInput = document.getElementById('resetCodeInput');
+                if (resetCodeInput) {
+                    resetCodeInput.value = '';
+                }
+                
+                // Masquer l'erreur
+                const resetCodeError = document.getElementById('resetCodeError');
+                if (resetCodeError) {
+                    resetCodeError.classList.remove('show');
+                    resetCodeError.textContent = '';
+                }
+            },
+
+            hideAllScreens() {
+                // Masquer tous les écrans
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
             }
         };
 
@@ -1487,6 +1818,13 @@
             document.getElementById('modal').addEventListener('click', (e) => {
                 if (e.target.id === 'modal') {
                     app.closeModal();
+                }
+            });
+            
+            // Touche Entrée pour valider le code de réinitialisation
+            document.getElementById('resetCodeInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    app.confirmResetWithCode();
                 }
             });
         });
