@@ -1281,7 +1281,10 @@
                 localStorage.setItem('rgpdAccepted', 'true');
                 this.rgpdAccepted = true;
                 document.getElementById('rgpdModal').classList.remove('active');
-                this.renderColleges();
+                
+                // Afficher l'écran d'identité (Prénom + Nom) avant les collèges
+                this.showScreen('identityScreen');
+                console.log("✅ RGPD accepté - Affichage du formulaire d'identité");
             },
 
             declineRGPD() {
