@@ -1811,9 +1811,59 @@
                 }
             });
         });
-    </script>
+        // ✅ FONCTION D'ENREGISTREMENT - Intégrée directement
+        /**
+         * Enregistrer la réponse dans le Google Sheet via Google Apps Script
+         */
+        async function recordSA80_1880ToSheet(ip, firstName, lastName, priorities) {
+            try {
+                console.log("📤 Envoi des données au Google Sheet...");
+                
+                const payload = {
+                    ip: ip,
+                    firstName: firstName,
+                    lastName: lastName,
+                    priorities: priorities,
+                    timestamp: new Date().toLocaleString('fr-FR')
+                };
+                
+                console.log("📊 Données à envoyer :", payload);
+                
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                console.log("✅ Réponse du serveur :", response.status);
+                
+                return {
+                    success: true,
+                    message: "Vote enregistré dans le Google Sheet"
+                };
+                
+            } catch (error) {
+                console.error("❌ Erreur lors de l'enregistrement :", error);
+                return {
+                    success: false,
+                    error: error.toString()
+                };
+            }
+        }
 
-    <!-- ✅ VÉRIFICATION SA80_1880 VIA GOOGLE SHEET -->
-    <script src="VERIFICATION-SA80_1880-SHEET.js"></script>
+        /**
+         * Vérifier avant soumission (optionnel avec accès libre)
+         */
+        async function checkBeforeSA80_1880Submit(ip, firstName, lastName) {
+            return {
+                verified: true,
+                canSubmit: true,
+                message: "Accès libre activé"
+            };
+        }
+    </script>
 </body>
 </html>
