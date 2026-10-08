@@ -743,29 +743,29 @@
             <p>Élections Professionnelles 2026 - Priorités de revendications</p>
         </div>
 
-        <!-- ÉCRAN 0: Identité (Nom/Prénom) -->
+        <!-- ÉCRAN 0: Identité (Nom/Prénom) - OPTIONNEL -->
         <div id="identityScreen" class="screen">
             <div class="container">
                 <div class="header">
-                    <h1>👤 Qui êtes-vous ?</h1>
-                    <p>Veuillez renseigner votre identité pour participer au sondage</p>
+                    <h1>👤 Votre identité</h1>
+                    <p>Renseignez votre identité ou continuez de manière anonyme</p>
                 </div>
 
                 <form id="identityForm" onsubmit="app.submitIdentity(event)" style="max-width: 500px; margin: 0 auto;">
                     <div style="margin-bottom: 20px;">
                         <label for="firstName" style="display: block; margin-bottom: 8px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                            Prénom <span style="color: #ffd700;">*</span>
+                            Prénom <span style="color: #999;">(optionnel)</span>
                         </label>
-                        <input type="text" id="firstName" name="firstName" required 
+                        <input type="text" id="firstName" name="firstName" 
                                style="width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 6px; font-size: 1rem;"
                                placeholder="Ex: Marie">
                     </div>
 
                     <div style="margin-bottom: 20px;">
                         <label for="lastName" style="display: block; margin-bottom: 8px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                            Nom <span style="color: #ffd700;">*</span>
+                            Nom <span style="color: #999;">(optionnel)</span>
                         </label>
-                        <input type="text" id="lastName" name="lastName" required 
+                        <input type="text" id="lastName" name="lastName" 
                                style="width: 100%; padding: 12px; border: 2px solid #fff; border-radius: 6px; font-size: 1rem;"
                                placeholder="Ex: Dupont">
                     </div>
@@ -880,9 +880,10 @@
                     <li><strong>Vos droits :</strong> Accès, rectification, suppression - contactez le syndicat</li>
                 </ul>
 
-                <h2>Confidentialité</h2>
+                <h2>Confidentialité & Anonymat</h2>
                 <p>
-                    Vos réponses sont <strong>confidentielles</strong>. Seule votre IP est enregistrée pour éviter les doublons.
+                    Vos réponses sont <strong>confidentielles</strong>. Vous pouvez voter de manière <strong>anonyme</strong> - votre prénom et nom sont optionnels. 
+                    Seule votre IP est enregistrée pour éviter les doublons.
                     Votre identité n'est jamais associée à vos votes.
                 </p>
 
@@ -1571,11 +1572,8 @@
                 const lastName = document.getElementById('lastName').value.trim();
                 const errorDiv = document.getElementById('identityError');
                 
-                if (!firstName || !lastName) {
-                    errorDiv.textContent = 'Veuillez remplir tous les champs (prénom et nom).';
-                    errorDiv.style.display = 'block';
-                    return;
-                }
+                // Prénom ET Nom sont optionnels - pas de validation requise
+                // (Accès anonyme autorisé)
                 
                 // Stocker l'identité
                 this.userName = firstName;
